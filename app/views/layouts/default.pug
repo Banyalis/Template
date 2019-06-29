@@ -1,0 +1,13 @@
+include ../../../node_modules/bemto.pug/bemto
+include ../includes/mixins
+
+block variables
+
+- set_bemto_settings({ modifier: "--" })
+
+<!DOCTYPE html>
+html(lang="ru-RU")
+	include ../includes/head
+	body
+		block content
+		script(src="../scripts/app.js")

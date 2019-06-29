@@ -1,0 +1,146 @@
+// Миксин для базовых параметров псевдоэлементов
+// Пример использования:
+// div:before
+// 	@include pseudo;
+
+@mixin pseudo($content: "", $display: block) {
+	content: $content;
+	display: $display;
+}
+
+// Миксин для добавления clearfix
+// Пример использования:
+// .parent
+// 	@include clearfix;
+
+@mixin clearfix {
+	&:after {
+		@include pseudo("", table);
+		clear: both;
+	}
+}	
+
+// Миксин для медиа запросов
+// Пример использования:
+// div
+// 	@include screen("phone");
+// 		Правила для разрешений выше "phone"
+// 	@include screen("phone", max);
+// 		Правила для разрешений ниже "phone"
+
+@mixin screen($width, $type: max) {
+	@if map_has_key($breakpoints, $width) {
+		$width: map_get($breakpoints, $width);
+
+		@if $type==max {
+			$width: $width - 1px;
+		}
+  
+		@media only screen and (#{$type}-width: $width) {
+			@content;
+		}
+	}
+}
+
+// Миксин для выравнивания блока по центру
+// Пример использования:
+// div
+// 	@include center-block;
+
+@mixin center-block {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+// Миксин для выравнивания картинки по центру
+// Пример использования:
+// div
+// 	@include center-image;
+
+@mixin center-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+}
+
+// Миксин для изображений
+// Нужен, чтобы картинка заполняла другой блок подобно background-size: cover
+// Пример использования:
+// div
+// 	@include fill-img;
+
+@mixin fill-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+// Миксин для обрезания длинной строки троеточием
+// Пример использования:
+// p
+// 	@include ellipsis(100%);
+
+@mixin ellipsis($truncation-boundary) {
+	max-width: $truncation-boundary;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+// Миксин аппаратного ускорения анимирующихся элементов
+// Пример использования:
+// div
+// 	@include performance;
+
+@mixin performance($backface: true, $perspective: 1000) {
+	@if $backface {
+		backface-visibility: hidden;
+	}
+
+	perspective: $perspective;
+}
+
+// Миксин для треугольников, сделанных через :before и :after
+// Пример:
+// div:before
+// 	@include triangle(red, top, 10px);
+
+@mixin triangle($color, $direction, $size) {
+	@include pseudo;
+
+	width: 0;
+	height: 0;
+
+	@if $direction==top {
+		border-left: $size solid transparent;
+		border-right: $size solid transparent;
+		border-bottom: $size solid $color;
+		margin-bottom: -$size;
+	}
+
+	@else if $direction==left {
+		border-top: $size solid transparent;
+		border-right: $size solid $color;
+		border-bottom: $size solid transparent;
+		margin-left: -$size;
+	}
+
+	@else if $direction==right {
+		border-top: $size solid transparent;
+		border-left: $size solid $color;
+		border-bottom: $size solid transparent;
+		margin-right: -$size;
+	}
+
+	@else if $direction==bottom {
+		border-top: $size solid $color;
+		border-left: $size solid transparent;
+		border-right: $size solid transparent;
+		margin-top: -$size;
+	}
+}
